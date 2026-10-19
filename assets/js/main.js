@@ -33,13 +33,13 @@ let destinations = [
  {name:'India',region:'Asia',tag:'Heritage, cuisine & diverse landscapes',image:'photo-1524492412937-b28074a5d7da'},
  {name:'Barbados',region:'Caribbean',tag:'Caribbean beaches, rum & island life',image:'photo-1580541631950-7282082b03fe'}
 ];
-const photo=(id,w=720)=>/^https?:\\/\\//i.test(id||'')?id:`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=82`;
+const photo=(id,w=720)=>/^https?:\/\//i.test(id||'')?id:`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=82`;
 const grid=document.querySelector('#destination-grid');
 const destinationOptions=destinations.map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
 ['#search-destination','#enquiry-destination'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.insertAdjacentHTML('beforeend',destinationOptions)});
 function renderDestinations(region='All'){
  const filtered=destinations.filter(d=>region==='All'||d.region===region||(region==='Visa-free'&&d.visa==='Visa-free'));
- grid.innerHTML=filtered.map(d=>`<article class="destination-card"><img class="destination-photo" src="${photo(d.image)}" alt="${d.name}" loading="lazy"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${(d.visa||d.visa_note)?` · ${d.visa||d.visa_note}`:''}</span><h3>${d.name}</h3><p>${d.tag||d.description||''}</p></div></article>`).join('');
+ grid.innerHTML=filtered.map(d=>`<article class="destination-card"><img class="destination-photo" src="${photo(d.image_url||d.image)}" alt="${d.name}" loading="lazy"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${(d.visa||d.visa_note)?` · ${d.visa||d.visa_note}`:''}</span><h3>${d.name}</h3><p>${d.tag||d.description||''}</p></div></article>`).join('');
  document.querySelector('#destination-count').textContent=`Showing ${filtered.length} destination${filtered.length===1?'':'s'}`;
 }
 renderDestinations();
