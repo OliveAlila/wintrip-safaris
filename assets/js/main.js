@@ -37,6 +37,15 @@ const photo=(id,w=720)=>/^https?:\/\//i.test(id||'')?id:`https://images.unsplash
 const grid=document.querySelector('#destination-grid');
 const destinationOptions=destinations.map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
 ['#search-destination','#enquiry-destination'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.insertAdjacentHTML('beforeend',destinationOptions)});
+try{
+ const selectedDestination=sessionStorage.getItem('wintripSelectedDestination');
+ if(selectedDestination){
+  ['#search-destination','#enquiry-destination'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.value=selectedDestination});
+  const message=document.querySelector('#enquiry-form [name="message"]');
+  if(message&&!message.value)message.value=`I'd like help planning a trip to ${selectedDestination}. Please share suggestions and a quote.`;
+  sessionStorage.removeItem('wintripSelectedDestination');
+ }
+}catch(_){}
 function renderDestinations(region='All'){
  const filtered=destinations.filter(d=>region==='All'||d.region===region||(region==='Visa-free'&&d.visa==='Visa-free'));
  grid.innerHTML=filtered.map(d=>`<article class="destination-card" role="link" tabindex="0" aria-label="Explore ${d.name}" data-destination="${encodeURIComponent(d.name)}"><img class="destination-photo" src="${photo(d.image_url||d.image)}" alt="${d.name}" loading="lazy"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${(d.visa||d.visa_note)?` · ${d.visa||d.visa_note}`:''}</span><h3>${d.name}</h3><p>${d.tag||d.description||''}</p><span class="destination-explore-hint">Explore destination →</span></div></article>`).join('');
