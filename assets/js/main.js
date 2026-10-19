@@ -1,4 +1,4 @@
-const destinations = [
+let destinations = [
  {name:'Lamu',region:'Kenya',tag:'Swahili culture & island life',image:'photo-1518509562904-e7ef99cdcc86'},
  {name:'Nairobi',region:'Kenya',tag:'Culture, dining & city energy',image:'photo-1516026672322-bc52d61a55d5'},
  {name:'Maasai Mara',region:'Kenya',tag:'Big cats & the Great Migration',image:'photo-1516426122078-c23e76319801'},
@@ -31,18 +31,19 @@ const destinations = [
  {name:'China',region:'Asia',tag:'Ancient landmarks & modern skylines',image:'photo-1508804185872-d7badad00f7d'},
  {name:'Japan',region:'Asia',tag:'Cherry blossoms, tradition & innovation',image:'photo-1493976040374-85c8e12f0c0e'},
  {name:'India',region:'Asia',tag:'Heritage, cuisine & diverse landscapes',image:'photo-1524492412937-b28074a5d7da'},
- {name:'Barbados',region:'Africa',tag:'Caribbean beaches, rum & island life',image:'photo-1580541631950-7282082b03fe',visa:'Visa-free'}
+ {name:'Barbados',region:'Caribbean',tag:'Caribbean beaches, rum & island life',image:'photo-1580541631950-7282082b03fe'}
 ];
-const photo=(id,w=720)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=82`;
+const photo=(id,w=720)=>/^https?:\\/\\//i.test(id||'')?id:`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=82`;
 const grid=document.querySelector('#destination-grid');
 const destinationOptions=destinations.map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
 ['#search-destination','#enquiry-destination'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.insertAdjacentHTML('beforeend',destinationOptions)});
 function renderDestinations(region='All'){
  const filtered=destinations.filter(d=>region==='All'||d.region===region||(region==='Visa-free'&&d.visa==='Visa-free'));
- grid.innerHTML=filtered.map(d=>`<article class="destination-card"><img class="destination-photo" src="${photo(d.image)}" alt="${d.name}" loading="lazy"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${d.visa?` · ${d.visa}`:''}</span><h3>${d.name}</h3><p>${d.tag}</p></div></article>`).join('');
+ grid.innerHTML=filtered.map(d=>`<article class="destination-card"><img class="destination-photo" src="${photo(d.image)}" alt="${d.name}" loading="lazy"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${(d.visa||d.visa_note)?` · ${d.visa||d.visa_note}`:''}</span><h3>${d.name}</h3><p>${d.tag||d.description||''}</p></div></article>`).join('');
  document.querySelector('#destination-count').textContent=`Showing ${filtered.length} destination${filtered.length===1?'':'s'}`;
 }
 renderDestinations();
+fetch('api/destinations.php',{headers:{Accept:'application/json'}}).then(r=>{if(!r.ok)throw Error('API unavailable');return r.json()}).then(data=>{if(!Array.isArray(data.destinations))return;destinations=data.destinations;['#search-destination','#enquiry-destination'].forEach(sel=>{const el=document.querySelector(sel);if(!el)return;const selected=el.value;el.innerHTML='<option value="">Choose a destination</option>'+destinations.map(d=>`<option value="${d.name.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}">${d.name}</option>`).join('');el.value=selected});renderDestinations(document.querySelector('.region-tab.active')?.dataset.region||'All')}).catch(err=>console.info('Using local destination fallback until database is configured.',err.message));
 document.querySelectorAll('.region-tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.region-tab.active')?.classList.remove('active');btn.classList.add('active');renderDestinations(btn.dataset.region)}));
 const packages=[
  {name:'Maasai Mara Safari Escape',kind:'Safari',duration:'3 days / 2 nights',text:'Wildlife viewing across one of Africa’s most celebrated reserves.',image:'photo-1516426122078-c23e76319801'},
