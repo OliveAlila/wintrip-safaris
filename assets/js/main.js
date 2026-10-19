@@ -54,10 +54,21 @@ function renderDestinations(region='All'){
 renderDestinations();
 function openDestinationCard(card){
  if(!card)return;
- const name=card.dataset.destination;
- if(name)window.location.href='destination.html?destination='+name;
+ // Some hosting-side scripts may rewrite the card and remove data-destination.
+ // Fall back to the visible heading so cards remain navigable in either case.
+ const rawName=card.dataset.destination || card.querySelector('h3')?.textContent?.trim();
+ if(!rawName)return;
+ let name=rawName;
+ try{name=decodeURIComponent(rawName)}catch(_){}
+ window.location.href='destination.html?destination='+encodeURIComponent(name);
 }
-grid.addEventListener('click',e=>openDestinationCard(e.target.closest('.destination-card')));
+// Capture clicks so injected image/download controls cannot swallow card navigation.
+grid.addEventListener('click',e=>{
+ const card=e.target.closest('.destination-card');
+ if(!card)return;
+ if(e.target.closest('.lazy-felix-download-btn'))return;
+ openDestinationCard(card);
+},true);
 grid.addEventListener('keydown',e=>{
  const card=e.target.closest('.destination-card');
  if(card&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openDestinationCard(card);}
