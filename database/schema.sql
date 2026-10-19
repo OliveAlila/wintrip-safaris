@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS wintrip_safaris CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE wintrip_safaris;
-
 CREATE TABLE IF NOT EXISTS destinations (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(160) NOT NULL UNIQUE,
@@ -26,8 +23,14 @@ CREATE TABLE IF NOT EXISTS enquiries (
   INDEX idx_enquiries_email (email)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
 INSERT IGNORE INTO destinations (name, region, description, image_url, visa_note, sort_order) VALUES
-('Barbados','Africa','Rum, reggae, and Caribbean beaches.','https://images.unsplash.com/photo-1580541631950-7282082b03fe?auto=format&fit=crop&w=900&q=80','Visa-free',1),
+('Barbados','Caribbean','Rum, reggae, and Caribbean beaches.','https://images.unsplash.com/photo-1580541631950-7282082b03fe?auto=format&fit=crop&w=900&q=80',NULL,1),
 ('Lamu','Kenya','A UNESCO World Heritage island where Swahili culture and dhow sailing shape the pace of life.','https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=900&q=80',NULL,2),
 ('Nairobi','Kenya','Kenya’s capital for culture, dining and city energy.','https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=80',NULL,3),
 ('Maasai Mara','Kenya','Endless plains, big cats and the Great Migration.','https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=900&q=80',NULL,4),
