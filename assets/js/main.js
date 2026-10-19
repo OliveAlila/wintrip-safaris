@@ -62,17 +62,17 @@ function openDestinationCard(card){
  try{name=decodeURIComponent(rawName)}catch(_){}
  window.location.href='destination.html?destination='+encodeURIComponent(name);
 }
-// Capture clicks so injected image/download controls cannot swallow card navigation.
-grid.addEventListener('click',e=>{
- const card=e.target.closest('.destination-card');
- if(!card)return;
- if(e.target.closest('.lazy-felix-download-btn'))return;
+// Delegate from document: cards may be rewritten by third-party hosting scripts.
+document.addEventListener('click',e=>{
+ const card=e.target.closest('#destination-grid .destination-card');
+ if(!card || e.target.closest('.lazy-felix-download-btn'))return;
+ e.preventDefault();
  openDestinationCard(card);
 },true);
-grid.addEventListener('keydown',e=>{
- const card=e.target.closest('.destination-card');
+document.addEventListener('keydown',e=>{
+ const card=e.target.closest('#destination-grid .destination-card');
  if(card&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openDestinationCard(card);}
-});
+},true);
 fetch('api/destinations.php',{headers:{Accept:'application/json'}}).then(r=>{if(!r.ok)throw Error('API unavailable');return r.json()}).then(data=>{if(!Array.isArray(data.destinations))return;destinations=data.destinations;['#search-destination','#enquiry-destination'].forEach(sel=>{const el=document.querySelector(sel);if(!el)return;const selected=el.value;el.innerHTML='<option value="">Choose a destination</option>'+destinations.map(d=>`<option value="${d.name.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}">${d.name}</option>`).join('');el.value=selected});renderDestinations(document.querySelector('.region-tab.active')?.dataset.region||'All')}).catch(err=>console.info('Using local destination fallback until database is configured.',err.message));
 document.querySelectorAll('.region-tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.region-tab.active')?.classList.remove('active');btn.classList.add('active');renderDestinations(btn.dataset.region)}));
 const packages=[
