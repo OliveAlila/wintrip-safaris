@@ -108,7 +108,14 @@
     $('#destination-not-found').hidden = false;
     return;
   }
-  const local = fallback.find(item => slug(item.name) === slug(requestedName)) || {name:requestedName,region:'Destination'};
+  const knownPlaces = [
+    ['Diani & the South Coast','Kenya'],['Naivasha & the Rift','Kenya'],['Abu Dhabi','Middle East'],['Doha, Qatar','Middle East'],
+    ['Bali, Indonesia','Asia'],['Singapore','Asia'],['Malaysia / Kuala Lumpur','Asia'],['Europe','Europe'],['Malindi & Watamu','Kenya'],
+    ['Samburu','Kenya'],['Lake Nakuru','Kenya'],['Lake Elementaita','Kenya'],['Mount Kenya','Kenya'],['Uganda','Africa'],
+    ['Johannesburg','Africa'],['Thailand','Asia'],['Indonesia','Asia'],['China','Asia'],['Japan','Asia'],['India','Asia'],['Barbados','Caribbean']
+  ];
+  const local = fallback.find(item => slug(item.name) === slug(requestedName))
+    || (() => { const known = knownPlaces.find(item => slug(item[0]) === slug(requestedName)); return known ? {name:known[0],region:known[1],description:extraDescriptions[known[0]] || 'Discover local highlights, culture, landscapes and experiences with a tailor-made itinerary.'} : {name:requestedName,region:'Destination'}; })();
   showDestination(local);
   fetch('api/destinations.php', {headers:{Accept:'application/json'}})
     .then(response => { if (!response.ok) throw new Error('Destination API unavailable'); return response.json(); })
