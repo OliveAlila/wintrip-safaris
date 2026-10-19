@@ -39,10 +39,20 @@ const destinationOptions=destinations.map(d=>`<option value="${d.name}">${d.name
 ['#search-destination','#enquiry-destination'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.insertAdjacentHTML('beforeend',destinationOptions)});
 function renderDestinations(region='All'){
  const filtered=destinations.filter(d=>region==='All'||d.region===region||(region==='Visa-free'&&d.visa==='Visa-free'));
- grid.innerHTML=filtered.map(d=>`<article class="destination-card"><img class="destination-photo" src="${photo(d.image_url||d.image)}" alt="${d.name}" loading="lazy"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${(d.visa||d.visa_note)?` · ${d.visa||d.visa_note}`:''}</span><h3>${d.name}</h3><p>${d.tag||d.description||''}</p></div></article>`).join('');
+ grid.innerHTML=filtered.map(d=>`<article class="destination-card" role="link" tabindex="0" aria-label="Explore ${d.name}" data-destination="${encodeURIComponent(d.name)}"><img class="destination-photo" src="${photo(d.image_url||d.image)}" alt="${d.name}" loading="lazy"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${(d.visa||d.visa_note)?` · ${d.visa||d.visa_note}`:''}</span><h3>${d.name}</h3><p>${d.tag||d.description||''}</p><span class="destination-explore-hint">Explore destination →</span></div></article>`).join('');
  document.querySelector('#destination-count').textContent=`Showing ${filtered.length} destination${filtered.length===1?'':'s'}`;
 }
 renderDestinations();
+function openDestinationCard(card){
+ if(!card)return;
+ const name=card.dataset.destination;
+ if(name)window.location.href='destination.html?destination='+name;
+}
+grid.addEventListener('click',e=>openDestinationCard(e.target.closest('.destination-card')));
+grid.addEventListener('keydown',e=>{
+ const card=e.target.closest('.destination-card');
+ if(card&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openDestinationCard(card);}
+});
 fetch('api/destinations.php',{headers:{Accept:'application/json'}}).then(r=>{if(!r.ok)throw Error('API unavailable');return r.json()}).then(data=>{if(!Array.isArray(data.destinations))return;destinations=data.destinations;['#search-destination','#enquiry-destination'].forEach(sel=>{const el=document.querySelector(sel);if(!el)return;const selected=el.value;el.innerHTML='<option value="">Choose a destination</option>'+destinations.map(d=>`<option value="${d.name.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}">${d.name}</option>`).join('');el.value=selected});renderDestinations(document.querySelector('.region-tab.active')?.dataset.region||'All')}).catch(err=>console.info('Using local destination fallback until database is configured.',err.message));
 document.querySelectorAll('.region-tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.region-tab.active')?.classList.remove('active');btn.classList.add('active');renderDestinations(btn.dataset.region)}));
 const packages=[
