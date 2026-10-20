@@ -17,4 +17,31 @@ $dateValue = null;
 if ($travelDate !== '') { $date = DateTime::createFromFormat('!Y-m-d', $travelDate); if (!$date || $date->format('Y-m-d') !== $travelDate) { http_response_code(422); echo json_encode(['error' => 'Travel date must use YYYY-MM-DD format.']); exit; } $dateValue = $travelDate; }
 $stmt = $pdo->prepare('INSERT INTO enquiries (name, email, destination, travel_date, message, status, created_at) VALUES (:name, :email, :destination, :travel_date, :message, :status, NOW())');
 $stmt->execute(['name' => $name, 'email' => $email, 'destination' => $destination ?: null, 'travel_date' => $dateValue, 'message' => $message, 'status' => 'new']);
-echo json_encode(['ok' => true, 'message' => 'Enquiry received.'], JSON_UNESCAPED_UNICODE);
+
+// Email the enquiry to the official Wintrip Safaris inbox.
+// Use a sender address on the website's hosting domain; the traveller's address is Reply-To.
+$recipient = 'wintripsafarishelp@gmail.com';
+$subject = 'New Wintrip Safaris trip enquiry';
+$safeName = str_replace(["\\r", "\\n"], ' ', $name);
+$safeEmail = str_replace(["\\r", "\\n"], '', $email);
+$body = "A new trip enquiry was submitted on the Wintrip Safaris website.\\n\\n"
+    . "Name: {$safeName}\\n"
+    . "Email: {$safeEmail}\\n"
+    . "Destination: " . ($destination !== '' ? $destination : 'Not specified') . "\\n"
+    . "Travel date: " . ($dateValue ?? 'Not specified') . "\\n\\n"
+    . "Trip details:\\n{$message}\\n";
+$headers = [
+    'From' => 'Wintrip Safaris Website <no-reply@wintrip.page.gd>',
+    'Reply-To' => $safeEmail,
+    'Content-Type' => 'text/plain; charset=UTF-8',
+    'X-Mailer' => 'PHP/' . phpversion(),
+];
+$emailSent = @mail($recipient, $subject, $body, $headers);
+echo json_encode([
+    'ok' => true,
+    'saved' => true,
+    'email_sent' => $emailSent,
+    'message' => $emailSent
+        ? 'Thank you — your enquiry has been received and sent to the Wintrip team.'
+        : 'Your enquiry was saved, but the email notification could not be sent. Please contact wintripsafarishelp@gmail.com if your request is urgent.'
+], JSON_UNESCAPED_UNICODE);
