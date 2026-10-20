@@ -17,6 +17,16 @@
     {name:'Amboseli',region:'Kenya',description:'A wildlife destination known for elephant herds, open plains and views toward Mount Kilimanjaro when weather allows.',image_url:'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1800&q=85',tag:'Elephants & Kilimanjaro views'},
     {name:'Tsavo',region:'Kenya',description:'A vast wilderness area with varied landscapes, red-earth scenery, wildlife and a sense of space across eastern and western parks.',image_url:'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1800&q=85',tag:'Vast wilderness & red-dusted elephants'}
   ];
+  const detailedDescriptions = {
+    'Maasai Mara':'The Maasai Mara is one of Kenya’s best-known safari landscapes, with rolling grasslands, acacia-dotted plains and an extraordinary variety of wildlife. Guided drives offer opportunities to look for elephants, giraffes, buffalo, lions and other species, while the seasonal wildebeest migration can bring dramatic movement through the wider Mara ecosystem. The experience changes with the season, location and conditions, so a good itinerary balances wildlife viewing with time to enjoy the landscape and learn from local guides and communities. Migration sightings are never guaranteed.',
+    'Lamu':'Lamu is a historic island destination where Swahili architecture, carved wooden doors, dhow sailing and a relaxed coastal rhythm shape the visit. Explore the old town with a knowledgeable guide, discover local crafts and food, and make time for the beaches and neighbouring islands. The island is best enjoyed at a slower pace, with respect for local customs and community life.',
+    'Nairobi':'Nairobi combines a lively urban scene with unusual access to nature. Visitors can explore museums, galleries, restaurants and markets, learn about Kenya’s history, and arrange wildlife or conservation experiences around the city. It is also a practical starting point for many journeys into Kenya, making it easy to pair a city stay with a safari or coastal extension.',
+    'Diani & the South Coast':'Diani and Kenya’s South Coast are known for long stretches of pale sand, warm Indian Ocean waters and a mix of relaxed beach stays and active days outdoors. Depending on the season and sea conditions, visitors can arrange snorkelling, diving, boat excursions, cultural visits and coastal nature experiences. A flexible itinerary leaves space for both exploring and unwinding.',
+    'Mombasa':'Mombasa brings together centuries of coastal history, Swahili culture, busy markets and easy access to the Indian Ocean. Explore the Old Town and Fort Jesus with a guide, sample coastal cuisine, and add a beach stay or marine excursion. It works well as a short city break or as part of a longer coastal itinerary.',
+    'Zanzibar':'Zanzibar offers a distinctive blend of Swahili heritage, spice traditions and Indian Ocean scenery. Stone Town’s historic streets, local food, spice farms, dhow trips and beach stays each provide a different way to experience the islands. Boat and marine activities should be chosen with reputable local operators and suitable sea conditions.',
+    'Amboseli':'Amboseli is known for open landscapes, large elephant herds and views towards Mount Kilimanjaro when the weather is clear. Game drives, birdwatching and stays in nearby lodges or conservancies can be combined into a relaxed safari. Wildlife sightings and mountain views depend on natural conditions, so allow time and keep expectations flexible.',
+    'Cape Town':'Cape Town sits between mountain and ocean, with scenic drives, beaches, neighbourhood food, museums and access to the Cape Winelands. Visitors can combine Table Mountain and the city’s cultural sites with coastal walks, markets and day trips. Weather can affect mountain access and outdoor activities, so a flexible plan helps.'
+  };
   const extraDescriptions = {
     'Naivasha & the Rift':'Enjoy lakeside stays, boat outings, birdlife, cycling and dramatic Rift Valley scenery.',
     'Abu Dhabi':'Explore major cultural landmarks, grand architecture, waterfront promenades and Yas Island attractions.',
@@ -111,7 +121,7 @@
     $('#destination-tours').innerHTML=tours.map(card).join('');
   }
   function showDestination(destination, fromApi = false) {
-    const description = destination.description || extraDescriptions[destination.name] || destination.tag || 'Explore local highlights, landscapes, culture and experiences with a tailor-made itinerary.';
+    const description = detailedDescriptions[destination.name] || destination.description || extraDescriptions[destination.name] || destination.tag || 'Explore local highlights, landscapes, culture and experiences with a tailor-made itinerary.';
     const image = destination.image_url || destination.image || fallback.find(item => slug(item.name) === slug(destination.name))?.image_url || fallback[0].image_url;
     $('#destination-title').textContent = destination.name;
     document.title = destination.name + ' Travel Guide | Wintrip Safaris';
