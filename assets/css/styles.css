@@ -13,3 +13,7 @@
 
 /* All-destinations page and date picker */
 .all-places-link{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--chocolate);border-radius:3px;color:var(--chocolate);background:transparent;padding:8px 15px;font-size:11px;white-space:nowrap;font-weight:600}.all-places-link:hover{color:var(--ivory);background:var(--chocolate)}.destinations-hero{min-height:600px}.all-destinations-section{padding-top:100px}.trip-search input[type="date"]{min-height:28px;cursor:pointer;color:var(--ink)}.contact-email{margin-top:28px;color:#eaded1;font-size:13px}.contact-email a{color:#f1c8a6;text-decoration:underline;overflow-wrap:anywhere}@media(max-width:700px){.destinations-hero{min-height:720px}.all-destinations-section{padding-top:170px}.region-tabs{align-items:center}}
+
+/* Nudge the header logo slightly toward the left without changing the footer logo. */
+.site-header > .brand{margin-left:-10px}
+@media(max-width:820px){.site-header > .brand{margin-left:-5px}}
