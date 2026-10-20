@@ -10,3 +10,6 @@
 .destination-card[role="link"] .destination-photo{transition:transform .45s ease}
 .destination-card[role="link"]:hover .destination-photo{transform:scale(1.04)}
 .destination-explore-hint{display:inline-block;margin-top:8px;font-size:10px;font-weight:700;letter-spacing:.02em;color:#f2c9a9}
+
+/* All-destinations page and date picker */
+.all-places-link{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--chocolate);border-radius:3px;color:var(--chocolate);background:transparent;padding:8px 15px;font-size:11px;white-space:nowrap;font-weight:600}.all-places-link:hover{color:var(--ivory);background:var(--chocolate)}.destinations-hero{min-height:600px}.all-destinations-section{padding-top:100px}.trip-search input[type="date"]{min-height:28px;cursor:pointer;color:var(--ink)}.contact-email{margin-top:28px;color:#eaded1;font-size:13px}.contact-email a{color:#f1c8a6;text-decoration:underline;overflow-wrap:anywhere}@media(max-width:700px){.destinations-hero{min-height:720px}.all-destinations-section{padding-top:170px}.region-tabs{align-items:center}}
