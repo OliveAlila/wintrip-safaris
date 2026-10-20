@@ -77,6 +77,39 @@
   function renderEvents(destination) {
     $('#destination-events').innerHTML = eventsFor(destination).map(event => `<article class="event-card"><span class="event-type">${escapeHtml(event.type)}</span><h3>${escapeHtml(event.label)}</h3><p class="event-timing">◷ ${escapeHtml(event.timing)}</p><p>${escapeHtml(event.text)}</p><a class="text-link" href="${escapeHtml(event.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(event.action)} ↗</a></article>`).join('');
   }
+  function renderActivities(destination) {
+    const mara = /maasai mara/i.test(destination.name);
+    const coast = /diani|mombasa|lamu|zanzibar|mauritius|seychelles|malindi|watamu/i.test(destination.name);
+    const activities = mara ? [
+      ['Big Five game drives','Explore the savannah with a guide and look for iconic wildlife.'],
+      ['Great Migration viewing','Plan around seasonal wildebeest movement; timing varies each year.'],
+      ['Hot-air balloon safari','See the plains at sunrise with a specialist operator.'],
+      ['Maasai-led cultural visit','Learn about local traditions through a respectful community-led experience.'],
+      ['Wildlife photography','Enjoy sunrise and sunset light from safe viewing areas.']
+    ] : coast ? [
+      ['Explore the coastline','Discover beaches, coves and coastal viewpoints.'],
+      ['Boat or dhow excursion','See the coast from the water with a local operator.'],
+      ['Taste local cuisine','Sample regional dishes and fresh local ingredients.'],
+      ['Discover local heritage','Explore historic sites and cultural traditions with a guide.'],
+      ['Water or nature activity','Choose snorkelling, diving or a nature walk where available.']
+    ] : [
+      ['Explore the main landmarks','Visit well-known sights and learn about local history.'],
+      ['Discover local food','Try regional dishes and visit local markets.'],
+      ['Enjoy a scenic excursion','Explore landscapes or nature areas suited to the season.'],
+      ['Meet local culture and crafts','Discover local art, heritage and traditions respectfully.'],
+      ['Take a guided day trip','Add a nearby attraction based on your interests.']
+    ];
+    $('#destination-activities').innerHTML = activities.map((item,i)=>'<article class="destination-activity-card"><span class="activity-number">0'+(i+1)+'</span><h3>'+escapeHtml(item[0])+'</h3><p>'+escapeHtml(item[1])+'</p><a class="text-link" href="index.html#contact">Add to my trip ↗</a></article>').join('');
+  }
+  function renderPricing(destination) {
+    const mara = /maasai mara/i.test(destination.name);
+    const coast = /diani|mombasa|lamu|zanzibar|mauritius|seychelles|malindi|watamu/i.test(destination.name);
+    const hotels = mara ? [['Comfort camp','Simple camp or budget lodge','KES 8,000–18,000','per person / night'],['Classic safari lodge','Comfortable lodge or tented camp','KES 18,000–40,000','per person / night'],['Premium safari camp','Higher-end camp and enhanced service','KES 40,000–100,000+','per person / night']] : coast ? [['Comfort stay','Guesthouse or simple hotel','KES 5,000–12,000','per room / night'],['Boutique escape','Mid-range hotel or boutique stay','KES 12,000–30,000','per room / night'],['Premium resort','Upscale resort or private villa','KES 30,000–90,000+','per room / night']] : [['Comfort stay','Guesthouse or simple hotel','KES 5,000–12,000','per room / night'],['Boutique stay','Mid-range hotel or boutique property','KES 12,000–28,000','per room / night'],['Premium stay','Upscale hotel or luxury property','KES 28,000–80,000+','per room / night']];
+    const tours = mara ? [['Half-day game drive','Guided wildlife drive; fees may be extra','KES 8,000–18,000','per person'],['Full-day safari','Guided day drive; inclusions vary','KES 15,000–35,000','per person'],['Hot-air balloon safari','Sunrise flight experience','KES 45,000–65,000','per person']] : [['Guided highlights tour','A guided introduction to key sights','KES 3,000–8,000','per person'],['Full-day excursion','Transport and guide; entry fees may be extra','KES 8,000–20,000','per person'],['Specialist experience','Boat trip, food tour or nature excursion','KES 5,000–18,000','per person']];
+    const card = x=>'<article class="destination-price-card"><span class="price-demo-label">SAMPLE ESTIMATE</span><h4>'+escapeHtml(x[0])+'</h4><p>'+escapeHtml(x[1])+'</p><strong>'+escapeHtml(x[2])+'</strong><small>'+escapeHtml(x[3])+'</small><a class="button button-brown" href="index.html#contact">Request a quote →</a></article>';
+    $('#destination-hotels').innerHTML=hotels.map(card).join('');
+    $('#destination-tours').innerHTML=tours.map(card).join('');
+  }
   function showDestination(destination, fromApi = false) {
     const description = destination.description || extraDescriptions[destination.name] || destination.tag || 'Explore local highlights, landscapes, culture and experiences with a tailor-made itinerary.';
     const image = destination.image_url || destination.image || fallback.find(item => slug(item.name) === slug(destination.name))?.image_url || fallback[0].image_url;
@@ -100,6 +133,8 @@
       });
     });
     renderEvents(destination);
+    renderActivities(destination);
+    renderPricing(destination);
     $('#destination-loading').hidden = true;
     $('#destination-content').hidden = false;
   }
