@@ -31,7 +31,7 @@ let destinations = [
  {name:'China',region:'Asia',tag:'Ancient landmarks & modern skylines',image:'photo-1508804185872-d7badad00f7d'},
  {name:'Japan',region:'Asia',tag:'Cherry blossoms, tradition & innovation',image:'photo-1493976040374-85c8e12f0c0e'},
  {name:'India',region:'Asia',tag:'Heritage, cuisine & diverse landscapes',image:'photo-1524492412937-b28074a5d7da'},
- {name:'Barbados',region:'Caribbean',tag:'Caribbean beaches, rum & island life',image:'photo-1580541631950-7282082b03fe'}
+ {name:'Barbados',region:'Caribbean',tag:'Caribbean beaches, Bajan food & island heritage',image:'photo-1500375592092-40eb2168fd21'}
 ];
 const photo=(id,w=720)=>/^https?:\/\//i.test(id||'')?id:`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=82`;
 const grid=document.querySelector('#destination-grid');
@@ -48,7 +48,7 @@ try{
 }catch(_){}
 function renderDestinations(region=(document.body.dataset.page==='all-destinations'?'All':'Popular')){
  const filtered=region==='Popular'?destinations.slice(0,6):destinations.filter(d=>region==='All'||d.region===region||(region==='Visa-free'&&d.visa==='Visa-free'));
- grid.innerHTML=filtered.map(d=>`<article class="destination-card" role="link" tabindex="0" aria-label="Explore ${d.name}" data-destination="${encodeURIComponent(d.name)}"><img class="destination-photo" src="${photo(d.image_url||d.image)}" alt="${d.name}" loading="lazy"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${(d.visa||d.visa_note)?` · ${d.visa||d.visa_note}`:''}</span><h3>${d.name}</h3><p>${d.tag||d.description||''}</p><span class="destination-explore-hint">Explore destination →</span></div></article>`).join('');
+ grid.innerHTML=filtered.map(d=>`<article class="destination-card" role="link" tabindex="0" aria-label="Explore ${d.name}" data-destination="${encodeURIComponent(d.name)}"><img class="destination-photo" src="${photo(/barbados/i.test(d.name)?'photo-1500375592092-40eb2168fd21':(d.image_url||d.image))}" alt="${d.name}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=82'"><span class="destination-arrow" aria-hidden="true">↗</span><div class="destination-meta"><span class="destination-region">${d.region}${(d.visa||d.visa_note)?` · ${d.visa||d.visa_note}`:''}</span><h3>${d.name}</h3><p>${d.tag||d.description||''}</p><span class="destination-explore-hint">Explore destination →</span></div></article>`).join('');
  document.querySelector('#destination-count').textContent=`Showing ${filtered.length} destination${filtered.length===1?'':'s'}`;
 }
 renderDestinations(document.body.dataset.page==='all-destinations'?'All':'Popular');
